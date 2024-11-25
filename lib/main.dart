@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zitate_app_541_545/screen/zitat_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +10,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text("Zitaten"),
-        ),
-      ),
+    return MaterialApp(
+      home: ZitatScreen(),
     );
   }
 }
