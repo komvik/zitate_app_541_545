@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:zitate_app_541_545/futures/repository/json_repository.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:zitate_app_541_545/futures/models/get_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zitate_app_541_545/futures/models/quote.dart';
 
 // ignore: must_be_immutable
 class ZitatScreen extends StatefulWidget {
@@ -14,13 +14,13 @@ class ZitatScreen extends StatefulWidget {
 }
 
 class _ZitatScreenState extends State<ZitatScreen> {
+  Quote clQuote = Quote(
+      quoteStr: "quoteStr", authorStr: "authorStr", categoryStr: "categoryStr");
 //    JSON
-  String quoteStr = "Start";
-  String authorStr = "Start";
-  String categoryStr = "Start";
+
 //    REPO
-  bool isLoading = false; //für indikator
-  JsonRepository jsonRepository = JsonRepository();
+//  bool isLoading = false; //für indikator
+// JsonRepository jsonRepository = JsonRepository();
 //    INI
   @override
   void initState() {
@@ -33,9 +33,9 @@ class _ZitatScreenState extends State<ZitatScreen> {
     final String qData = await getData();
     final Map<String, dynamic> allData = jsonDecode(qData)[0];
     setState(() {
-      quoteStr = allData["quote"];
-      authorStr = allData["author"];
-      categoryStr = allData["category"];
+      clQuote.quoteStr = allData["quote"];
+      clQuote.authorStr = allData["author"];
+      clQuote.categoryStr = allData["category"];
     });
   }
 
@@ -57,17 +57,17 @@ class _ZitatScreenState extends State<ZitatScreen> {
             SizedBox(
               width: 320,
               child: Text(
-                quoteStr,
+                clQuote.quoteStr,
                 style: const TextStyle(fontSize: 20),
               ),
             ),
             Text(
-              authorStr,
+              clQuote.authorStr,
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 30),
             Text(
-              categoryStr,
+              clQuote.categoryStr,
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 30),
@@ -83,16 +83,25 @@ class _ZitatScreenState extends State<ZitatScreen> {
   }
 }
 
-//______________________________________________
-Future<String> getData() async {
-  final Uri uri = Uri.https('api.api-ninjas.com', '/v1/quotes');
+//   SharedPref.
+class SharedPreferencesQuote {
+  static const String keyStringList = "ksl";
 
-  final http.Response response = await http.get(uri,
-      headers: {'x-api-key': 'N3GBHnowDETYID/byVicqQ==Pzz67MSAYJwayc9Z'});
-
-  if (response.statusCode == 200) {
-    return response.body;
+  //Save
+  static Future<void> saveStringList(List<String> stringList) async {
+    final prefs = await SharedPreferences.getInstance();
+    String jsonString = json.encode(stringList);
+    await prefs.setString(keyStringList, jsonString);
   }
 
-  return "Fehler";
+  // Get
+  static Future<List<String>> getStringList() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString(keyStringList);
+    if (jsonString == null) {
+      return [];
+    }
+    List<dynamic> jsonList = json.decode(jsonString);
+    return jsonList.map((e) => e.toString()).toList();
+  }
 }

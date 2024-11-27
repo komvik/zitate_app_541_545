@@ -1,14 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-// class Quote {
-//   final String quote;
-//   final String author;
-//   final String category;
-
-//   Quote({required this.quote, required this.author, required this.category});
-// }
-
 class JsonRepository {
   void getData() {
     final quoteMap = jsonDecode(jsonDataString);

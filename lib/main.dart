@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zitate_app_541_545/futures/screen/zitat_screen.dart';
+import 'package:zitate_app_541_545/futures/screens/zitat_screen.dart';
 
 void main() {
   runApp(const MainApp());
